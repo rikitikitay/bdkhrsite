@@ -36,21 +36,27 @@
     <th>Отв.</th>   <th>Исполнитель</th>  <th>I кв.</th>  <th>II кв.</th>  <th>III кв.</th> <th>IV кв.</th>
 </tr>
 <?php 
-
-// while  
-echo '<tr>
-	<td><input type="checkbox"></td>
-	<td>
-	<select>
-	<option>Не выбрано</option>';
-include "select_executor.php";
-echo '	</select>
-	</td>
-	<td><input type="text" size="10"></td>
-	<td><input type="text" size="10"></td>
-	<td><input type="text" size="10"></td>
-	<td><input type="text" size="10"></td>
-</tr>';
+	$query = "SELECT * FROM executor";
+	$res = mysql_query($query);
+    for ($i = 0; $i < 5; ++$i) {
+        echo '<tr>
+            <td><input type="checkbox"></td>
+            <td>
+            <select>
+            <option>Не выбрано</option>';
+       	while($row = mysql_fetch_array($res)) {
+	    	$title = $row['title'];
+		    echo '<option>'.$title.'</option>';		
+    	};
+        mysql_data_seek($res,0);
+        echo '	</select>
+            </td>
+            <td><input type="text" size="10"></td>
+            <td><input type="text" size="10"></td>
+            <td><input type="text" size="10"></td>
+            <td><input type="text" size="10"></td>
+        </tr>';
+}
 ?>
 </table><br>
 <input type="submit" value="Сохранить">

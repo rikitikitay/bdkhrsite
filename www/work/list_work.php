@@ -7,6 +7,7 @@
 <table>
 <?php
 include ("../connection.php");
+echo '<h4><a href="work.php?id='; echo $id; echo '">Добавить новую работу</a><h4>';
 $id = mysql_real_escape_string($_GET["id"]);
 $where = "";
 if ($id != 0) {
