@@ -4,9 +4,9 @@ $number = mysql_real_escape_string($_GET["number"]);
 $title = mysql_real_escape_string($_GET["title"]);
 $order = mysql_real_escape_string($_GET["order"]);
 $begin = $_GET["begin"];
-$id = mysql_real_escape_string($_GET["id"]);
-if ($id != 0) {  
-	$query = "UPDATE `khr` SET `order`= '".$order."', `num`= '".$number."', `title`= '".$title."', `begin`='".$begin."'  WHERE id='".$id."'";
+$idkhr = mysql_real_escape_string($_GET["idkhr"]);
+if ($idkhr != 0) {  
+	$query = "UPDATE `khr` SET `order`= '".$order."', `num`= '".$number."', `title`= '".$title."', `begin`='".$begin."'  WHERE id='".$idkhr."'";
 	$sql = mysql_query($query) or die(mysql_error());
 	if ($sql) 
 	{

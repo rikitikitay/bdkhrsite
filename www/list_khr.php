@@ -20,18 +20,18 @@ echo "<tr>
 	</tr>";
 while($row = mysql_fetch_array($res))
 {	
-	$id =  $row['id'];
+	$idkhr =  $row['id'];
 	echo '<tr>';
 	echo '<td>'.$row['num'].'</td>';
 	$title = $row['title'];
 	if (strlen($title) == 0) {
 		$title = 'Без названия';
 	};
-	echo '<td><a href="work/list_work.php?id='; echo $id; echo '">'.$title.'</a></td>';
+	echo '<td><a href="work/list_work.php?idkhr='; echo $idkhr; echo '">'.htmlspecialchars(stripslashes($title)).'</a></td>';
 	echo '<td>('.$row['order'].')</td>';
 	echo '<td>'.$row['begin'].'</td>';
-	echo '<td><a href="khr/khr.php?id='; echo $id; echo '">Редактировать</a></td>';
-	echo '<td><a href="khr/delete_khr.php?id='; echo $id; echo '">Удалить</a></td>';
+	echo '<td><a href="khr/khr.php?idkhr='; echo $idkhr; echo '">Редактировать</a></td>';
+	echo '<td><a href="khr/delete_khr.php?idkhr='; echo $idkhr; echo '">Удалить</a></td>';
 	echo '</tr>';	
 };
 mysql_close($dbh);

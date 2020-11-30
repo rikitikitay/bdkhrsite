@@ -7,11 +7,11 @@
 <table>
 <?php
 include ("../connection.php");
-echo '<h4><a href="work.php?id='; echo $id; echo '">Добавить новую работу</a><h4>';
-$id = mysql_real_escape_string($_GET["id"]);
+$idkhr = mysql_real_escape_string($_GET["idkhr"]);
+echo '<h4><a href="work.php?idkhr='.$idkhr.'">Добавить новую работу</a><h4>';
 $where = "";
-if ($id != 0) {
-	$where = " WHERE `id_khr`='".$id."'"; 
+if ($idkhr != 0) {
+	$where = " WHERE `id_khr`='".$idkhr."'"; 
 };	
 $query = "SELECT * FROM work".$where;
 $res = mysql_query($query);
@@ -41,8 +41,8 @@ while($row = mysql_fetch_array($res))
 	echo "<tr>
 		<td>".$row['num']."</td>";
 	echo "	<td>$type</td>";
-	$id = $row['id'];
-	echo '<td><a href="work.php?id='; echo $id; echo '">'.$title.'</a></td>';
+	$idwork = $row['id'];
+	echo '<td><a href="work.php?idwork='.$idwork.'&idkhr='.$idkhr.'">'.htmlspecialchars(stripslashes($title)).'</a></td>';
 	echo "	<td>".$row['begin_cur']."</td>";
 	echo "</tr>";
 	
