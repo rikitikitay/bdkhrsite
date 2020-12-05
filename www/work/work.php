@@ -20,7 +20,7 @@
         $option = '<option ';
         if ($id == $idkhr) {
             $option = $option.'selected';
-        }
+        };
         $option = $option.'>'.$number.' ('.$order.')</option>'; 
         echo $option;
 	};
@@ -91,49 +91,73 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
     <th>Исполнитель</th>
     <th>I кв.</th>
     <th>II кв.</th>
- <?php /*   <th>III кв.</th>
+    <th>III кв.</th>
     <th>IV кв.</th>
- */ ?>
 </tr>
 <?php
-    $row = mysql_fetch_array(mysql_query('SELECT MAX(`order`) AS `max_order` FROM volume')); // до цикла 
-    $max_order = $row['max_order'];   // до цикла      
-    $query = "SELECT * FROM volume WHERE `work_id` = ".$idwork." AND `order` = 1 AND `quoter` = 1"; // это до цикла в более жирном запросе
-    $res = mysql_query($query) or die("error"); // ну и это тоже соответственно
-    $row = mysql_fetch_array($res); // и это
-    $volume = $row['volume']; // это во внутренний цикл
-    $resp = $row['resp']; // внешний цикл
-    $executor_id = $row['executor_id']; // внешний цикл
-	$query = "SELECT * FROM executor";  // это до цикла
-    $res_exec = mysql_query($query); // ну тоже ды, причём переменную по-особому обозвать
-    /*  for ($i = 0; $i < 5; ++$i) { */ // переделать, связав с макс_ордер ?>
-        <tr> <?php // внешний цикл ?>
-<td><input type="checkbox" <?php if ($resp != 0) { echo " checked";} //внешний цикл ?> >
-</td> <?php // внешний цикл ?> 
+ 	$query = "SELECT * FROM executor";  
+    $res_exec = mysql_query($query); 
+    $row = mysql_fetch_array(mysql_query('SELECT MAX(`order`) AS `max_order` FROM volume WHERE `work_id` = '.$idwork));  
+    $max_order = $row['max_order'];
+    $query = "SELECT `resp`, `executor_id`, `volume`, `order`, `quoter`
+            FROM volume WHERE `work_id` = ".$idwork."
+            ORDER BY `order` ASC, `quoter` ASC";  
+    $res = mysql_query($query) or die("error");
+    $max_row_count = mysql_num_rows($res); 
+    $row_count = 1;
+    $row = mysql_fetch_array($res);
+    for ($i = 1; $i <= 5 || $i <= $max_order + 1 ; ++$i) {         
+        $resp = $row['resp']; 
+        $executor_id = $row['executor_id']; 
+        $order = $row['order'];
+        if ($order != $i) { 
+            $resp = 0; 
+            $executor_id = 0;
+        };    
+?>
+<tr> 
+<td><input type="checkbox" <?php if ($resp != 0) { echo " checked";} ?> >
+</td>  
 <td>
 <select>
     <option>Не выбрано</option>';
 <?php       
-    while($row_exec = mysql_fetch_array($res_exec)) {
-        $title = $row_exec['title'];
-        $id = $row_exec['id'];
-        $option = '<option ';
-        if ($id == $executor_id) {
-            $option = $option.'selected';
-        }
-        $option = $option.'>'.$title.'</option>'; 
-        echo $option;
-    };
-    mysql_data_seek($res_exec,0); 
+        while($row_exec = mysql_fetch_array($res_exec)) {
+            $title = $row_exec['title'];
+            $id = $row_exec['id'];
+            $option = '<option ';
+            if ($id == $executor_id) {
+                $option = $option.'selected';
+            };
+            $option = $option.'>'.$title.'</option>'; 
+            echo $option;
+        };
+        mysql_data_seek($res_exec,0); 
 ?>
 </select>
-</td><?php // внешний цикл ?>
+</td>
+<?php
+        for ($j = 1; $j <= 4; ++$j) {
+            $volume = $row['volume'];
+            $quoter = $row['quoter'];
+            $order = $row['order'];
+            if ($quoter != $j || $order != $i) {
+                $volume = NULL;
+                if ($row_count > 0 && $row_count < $max_row_count + 1) { 
+                    mysql_data_seek($res, $row_count - 1); 
+                    $row_count -= 1; 
+                };  
+            };    
+            $row = mysql_fetch_array($res); 
+            $row_count += 1;  
+?>        
 <td><input type="text" size="10" value="<?php echo $volume ?>"></td> <?php // внутренний цикл ?>
-<td><input type="text" size="10"></td>
- <?php       /*           <td><input type="text" size="10"></td>
-            <td><input type="text" size="10"></td> 
-        </tr>'; */ // внешний цикл
-// }
+<?php 
+        };
+?>
+</tr>
+<?php
+    };
 ?>
 </table><br>
 <input type="submit" value="Сохранить">
