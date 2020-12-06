@@ -4,7 +4,7 @@
 </head>
 <body>
 <h3>Добавление/Редактирование работы</h3><br> 
-<form action="work.php" method = "get">
+<form name="work" action="make_work.php" method = "get">
 <label>
 КХР &nbsp;&nbsp;
 <select>
@@ -21,24 +21,26 @@
         if ($id == $idkhr) {
             $option = $option.'selected';
         };
-        $option = $option.'>'.$number.' ('.$order.')</option>'; 
+        $option = $option.'>'.$number.' ('.$order.')</option>';
+        $number = NULL; 
         echo $option;
-	};
-	$idwork = $_GET['idwork'];
-	$query = "SELECT * FROM work WHERE id="."'$idwork'";
-	$res = mysql_query($query);
-	$row = mysql_fetch_assoc($res);
-    $title = $row['title'];
-    $number = $row['num'];
-    $begin_current = $row['begin_cur'];
-    $end_current = $row['end_cur'];
-    $type_work = $row['type'];
-		
+    };
+    $idwork = $_GET['idwork'];
+    if ($idwork > 0) {
+        $query = "SELECT * FROM work WHERE id="."'$idwork'";
+        $res = mysql_query($query);
+        $row = mysql_fetch_array($res);
+        $title = $row['title'];
+        $number = $row['num'];
+        $begin_current = $row['begin_cur'];
+        $end_current = $row['end_cur'];
+        $type_work = $row['type'];
+    };
 ?>
 </select>
 </label><br>
 <label>
-Номер <input type="text" size="10" value="<?php echo $number; ?> ">&nbsp;&nbsp;&nbsp;
+Номер <input name="number" type="text" size="10" value="<?php echo $number; ?> ">&nbsp;&nbsp;&nbsp;
 </label>
 <label>
 Название 
@@ -48,23 +50,24 @@ size="60"
 value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
 </label>
 <?php 
-    $query = "SELECT * FROM dependency WHERE work_id="."'$idwork'";
-	$res = mysql_query($query);
-    $row = mysql_fetch_assoc($res);
-    $type_dependency = $row['type'];
-    $next = $row['next_id'];
-    // previous num
-    $prev = $row['prev_id'];
-    $query = "SELECT num FROM work WHERE id = "."'$prev'";
-    $res = mysql_query($query);
-    $row = mysql_fetch_assoc($res);
-    $prev = $row['num'];
-    // next num    
-    $query = "SELECT num FROM work WHERE id = "."'$next'";
-    $res = mysql_query($query);
-    $row = mysql_fetch_assoc($res);
-    $next = $row['num'];
-    
+    if ($idwork > 0) {
+        $query = "SELECT * FROM dependency WHERE work_id="."'$idwork'";
+        $res = mysql_query($query);
+        $row = mysql_fetch_assoc($res);
+        $type_dependency = $row['type'];
+        $next = $row['next_id'];
+        // previous num
+        $prev = $row['prev_id'];
+        $query = "SELECT num FROM work WHERE id = "."'$prev'";
+        $res = mysql_query($query);
+        $row = mysql_fetch_assoc($res);
+        $prev = $row['num'];
+        // next num    
+        $query = "SELECT num FROM work WHERE id = "."'$next'";
+        $res = mysql_query($query);
+        $row = mysql_fetch_assoc($res);
+        $next = $row['num'];
+    };
 ?>
 <label title="0 - работа; 1 - доплата">
 Тип работы <input type="text" size="10" value="<?php echo $type_work?>">
@@ -96,24 +99,28 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
 </tr>
 <?php
  	$query = "SELECT * FROM executor";  
-    $res_exec = mysql_query($query); 
-    $row = mysql_fetch_array(mysql_query('SELECT MAX(`order`) AS `max_order` FROM volume WHERE `work_id` = '.$idwork));  
-    $max_order = $row['max_order'];
-    $query = "SELECT `resp`, `executor_id`, `volume`, `order`, `quoter`
-            FROM volume WHERE `work_id` = ".$idwork."
-            ORDER BY `order` ASC, `quoter` ASC";  
-    $res = mysql_query($query) or die("error");
-    $max_row_count = mysql_num_rows($res); 
-    $row_count = 1;
-    $row = mysql_fetch_array($res);
+    $res_exec = mysql_query($query);
+    if ($idwork > 0) {
+        $row = mysql_fetch_array(mysql_query('SELECT MAX(`order`) AS `max_order` FROM volume WHERE `work_id` = '.$idwork));  
+        $max_order = $row['max_order'];
+        $query = "SELECT `resp`, `executor_id`, `volume`, `order`, `quoter`
+                FROM volume WHERE `work_id` = ".$idwork."
+                ORDER BY `order` ASC, `quoter` ASC";  
+        $res = mysql_query($query) or die("error");
+        $max_row_count = mysql_num_rows($res); 
+        $row_count = 1;
+        $row = mysql_fetch_array($res);
+    };
     for ($i = 1; $i <= 5 || $i <= $max_order + 1 ; ++$i) {         
-        $resp = $row['resp']; 
-        $executor_id = $row['executor_id']; 
-        $order = $row['order'];
-        if ($order != $i) { 
-            $resp = 0; 
-            $executor_id = 0;
-        };    
+        if ($idwork > 0) {
+            $resp = $row['resp']; 
+            $executor_id = $row['executor_id']; 
+            $order = $row['order'];
+            if ($order != $i) { 
+                $resp = 0; 
+                $executor_id = 0;
+            }; 
+        };   
 ?>
 <tr> 
 <td><input type="checkbox" <?php if ($resp != 0) { echo " checked";} ?> >
@@ -138,18 +145,20 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
 </td>
 <?php
         for ($j = 1; $j <= 4; ++$j) {
-            $volume = $row['volume'];
-            $quoter = $row['quoter'];
-            $order = $row['order'];
-            if ($quoter != $j || $order != $i) {
-                $volume = NULL;
-                if ($row_count > 0 && $row_count < $max_row_count + 1) { 
-                    mysql_data_seek($res, $row_count - 1); 
-                    $row_count -= 1; 
-                };  
-            };    
-            $row = mysql_fetch_array($res); 
-            $row_count += 1;  
+            if ($idwork > 0) { 
+                $volume = $row['volume'];
+                $quoter = $row['quoter'];
+                $order = $row['order'];
+                if ($quoter != $j || $order != $i) {
+                    $volume = NULL;
+                    if ($row_count > 0 && $row_count < $max_row_count + 1) { 
+                        mysql_data_seek($res, $row_count - 1); 
+                        $row_count -= 1; 
+                    };  
+                };    
+                $row = mysql_fetch_array($res); 
+                $row_count += 1;
+            };  
 ?>        
 <td><input type="text" size="10" value="<?php echo $volume ?>"></td> <?php // внутренний цикл ?>
 <?php 
