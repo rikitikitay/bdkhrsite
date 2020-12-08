@@ -11,7 +11,7 @@ $idkhr = mysql_real_escape_string($_GET["idkhr"]);
 echo '<h4><a href="work.php?idkhr='.$idkhr.'">Добавить новую работу</a><h4>';
 $where = "";
 if ($idkhr != 0) {
-	$where = " WHERE `id_khr`='".$idkhr."'"; 
+	$where = " WHERE `khr_id`='".$idkhr."'"; 
 };	
 $query = "SELECT * FROM work".$where;
 $res = mysql_query($query);

@@ -6,8 +6,11 @@
 <h3>Добавление/Редактирование работы</h3><br> 
 <form name="work" action="make_work.php" method = "get">
 <label>
+<label>
+<input name="idwork" type="hidden" value="<?php echo $_GET['idwork']?>">
+</label>
 КХР &nbsp;&nbsp;
-<select>
+<select name="idkhr">
 <?php 	
 	include "../connection.php";
 	$query = "SELECT * FROM khr";
@@ -17,7 +20,7 @@
 		$number = $row['num'];
         $order = $row['order'];
         $id = $row['id'];
-        $option = '<option ';
+        $option = '<option value="'.$id.'" ';
         if ($id == $idkhr) {
             $option = $option.'selected';
         };
@@ -40,15 +43,19 @@
 </select>
 </label><br>
 <label>
-Номер <input name="number" type="text" size="10" value="<?php echo $number; ?> ">&nbsp;&nbsp;&nbsp;
+Номер <input name="number" type="text" size="10" value="<?php echo $number; ?>">&nbsp;&nbsp;&nbsp;
 </label>
 <label>
 Название 
 <input 
+name="title"
 type="text" 
 size="60"
 value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
 </label>
+<label title="0 - работа; 1 - доплата">
+Тип работы <input name="typework" type="text" size="10" value="<?php echo $type_work?>">
+</label><br>
 <?php 
     if ($idwork > 0) {
         $query = "SELECT * FROM dependency WHERE work_id="."'$idwork'";
@@ -69,23 +76,20 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
         $next = $row['num'];
     };
 ?>
-<label title="0 - работа; 1 - доплата">
-Тип работы <input type="text" size="10" value="<?php echo $type_work?>">
-</label><br>
 <label>
-Предыд. <input type="text" size="10" value="<?php echo $prev?>">&nbsp;&nbsp;&nbsp;
+Предыд. <input name="prev" type="text" size="10" value="<?php echo $prev?>">&nbsp;&nbsp;&nbsp;
 </label>
 <label>
-Послед. <input type="text" size="10" value="<?php echo $next?>">&nbsp;&nbsp;&nbsp;
+Послед. <input name="next" type="text" size="10" value="<?php echo $next?>">&nbsp;&nbsp;&nbsp;
 </label>
 <label title = "0 - требуется для завершения; 1 - требуется для начала">
-Тип зависимости<input type="text" size="10" value="<?php echo $type_dependency?>">
+Тип зависимости<input name="type_dependency" type="text" size="10" value="<?php echo $type_dependency?>">
 </label><br>
 <label>
-Дата начала <input type="text" size="20" value="<?php echo $begin_current ?>">&nbsp;&nbsp;&nbsp;
+Дата начала <input name="begin_current" type="text" size="20" value="<?php echo $begin_current ?>">&nbsp;&nbsp;&nbsp;
 </label>
 <label>
-Дата окончания <input type="text" size="20" value="<?php echo $end_current ?>">
+Дата окончания <input name="end_current" type="text" size="20" value="<?php echo $end_current ?>">
 </label><br><br>
 <table width="25%" border="1" cellpadding="5" cellspacing="0">
 	<caption>Трудоёмкость</caption>
@@ -123,16 +127,16 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
         };   
 ?>
 <tr> 
-<td><input type="checkbox" <?php if ($resp != 0) { echo " checked";} ?> >
+<td><input name="resp<?php echo $i; ?>" type="checkbox" <?php if ($resp != 0) { echo " checked";} ?> >
 </td>  
 <td>
-<select>
-    <option>Не выбрано</option>';
+<select name="exec<?php echo $i; ?>">
+    <option value="0" >Не выбрано</option>';
 <?php       
         while($row_exec = mysql_fetch_array($res_exec)) {
             $title = $row_exec['title'];
             $id = $row_exec['id'];
-            $option = '<option ';
+            $option = '<option value="'.$id.'"';
             if ($id == $executor_id) {
                 $option = $option.'selected';
             };
@@ -160,7 +164,7 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
                 $row_count += 1;
             };  
 ?>        
-<td><input type="text" size="10" value="<?php echo $volume ?>"></td> <?php // внутренний цикл ?>
+<td><input name="<?php echo 'order'.$i.'quoter'.$j ?>" type="text" size="10" value="<?php echo $volume ?>"></td>
 <?php 
         };
 ?>
