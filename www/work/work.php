@@ -11,7 +11,8 @@
 </label>
 КХР &nbsp;&nbsp;
 <select name="idkhr">
-<?php 	
+<?php 
+    include "../delete_functions.php";
 	include "../connection.php";
 	$query = "SELECT * FROM khr";
     $res = mysql_query($query);
@@ -173,7 +174,8 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
     };
 ?>
 </table><br>
-<input type="submit" value="Сохранить">
+<input type="submit" value="Сохранить">&nbsp;&nbsp;&nbsp;
+<input type="button" value="Удалить" onclick="<?php delete_work($idwork); ?>">
 </form>
 <?php mysql_close($dbh); ?>
 </body>
