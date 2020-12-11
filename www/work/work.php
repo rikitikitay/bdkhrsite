@@ -14,9 +14,26 @@
 <?php 
     include "../delete_functions.php";
 	include "../connection.php";
-	$query = "SELECT * FROM khr";
+    $idwork = $_GET['idwork'];
+    if ($idwork > 0) {
+        $query = "SELECT * FROM work WHERE id="."'$idwork'";
+        $res = mysql_query($query);
+        $row = mysql_fetch_array($res);
+        $title = $row['title'];
+        $number = $row['num'];
+        $begin_current = $row['begin_cur'];
+        $end_current = $row['end_cur'];
+        $type_work = $row['type'];
+        $idkhr = $row['khr_id'];
+    }; 
+?>
+    <option value="0">Не выбрано</option>
+<?php
+    $query = "SELECT * FROM khr";
     $res = mysql_query($query);
-    $idkhr = $_GET['idkhr'];
+    if (is_null($idkhr)) {
+        $idkhr = $_GET['idkhr'];
+    }
 	while($row = mysql_fetch_array($res)) {
 		$number = $row['num'];
         $order = $row['order'];
@@ -29,17 +46,7 @@
         $number = NULL; 
         echo $option;
     };
-    $idwork = $_GET['idwork'];
-    if ($idwork > 0) {
-        $query = "SELECT * FROM work WHERE id="."'$idwork'";
-        $res = mysql_query($query);
-        $row = mysql_fetch_array($res);
-        $title = $row['title'];
-        $number = $row['num'];
-        $begin_current = $row['begin_cur'];
-        $end_current = $row['end_cur'];
-        $type_work = $row['type'];
-    };
+    
 ?>
 </select>
 </label><br>
@@ -175,7 +182,7 @@ value="<?php echo htmlspecialchars(stripslashes($title)); ?>">&nbsp;&nbsp;&nbsp;
 ?>
 </table><br>
 <input type="submit" value="Сохранить">&nbsp;&nbsp;&nbsp;
-<input type="button" value="Удалить" onclick="<?php delete_work($idwork); ?>">
+<a href="<?php echo 'delete_work.php?idwork='.$idwork; ?>">Удалить</a>
 </form>
 <?php mysql_close($dbh); ?>
 </body>
