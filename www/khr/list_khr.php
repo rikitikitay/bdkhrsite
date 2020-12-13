@@ -6,15 +6,16 @@
 <h3>Список КХР</h3>
 <table>
 <?php
-include ("connection.php");
+include "../connection.php";
 mysql_query ('SET NAMES cp1251');
-echo '<h4><a href="khr/khr.php?id='; echo $id; echo '">Добавить новую КХР</a><h4>';
+echo '<h4><a href="khr.php?id='; echo $id; echo '">Добавить новую КХР</a><h4>';
 $query = "SELECT * FROM khr";
 $res = mysql_query($query);
 echo "<tr>
 		<td>Номер</td>
 		<td>Название</td>
-		<td>Заказ</td>
+        <td>Заказ</td>
+
 		<td>Дата начала</td>
 		
 	</tr>";
@@ -27,11 +28,11 @@ while($row = mysql_fetch_array($res))
 	if (strlen($title) == 0) {
 		$title = 'Без названия';
 	};
-	echo '<td><a href="work/list_work.php?idkhr='; echo $idkhr; echo '">'.htmlspecialchars(stripslashes($title)).'</a></td>';
+	echo '<td><a href="../work/list_work.php?idkhr='; echo $idkhr; echo '">'.htmlspecialchars(stripslashes($title)).'</a></td>';
 	echo '<td>('.$row['order'].')</td>';
 	echo '<td>'.$row['begin'].'</td>';
-	echo '<td><a href="khr/khr.php?idkhr='; echo $idkhr; echo '">Редактировать</a></td>';
-	echo '<td><a href="khr/delete_khr.php?idkhr='; echo $idkhr; echo '">Удалить</a></td>';
+	echo '<td><a href="khr.php?idkhr='; echo $idkhr; echo '">Редактировать</a></td>';
+	echo '<td><a href="delete_khr.php?idkhr='; echo $idkhr; echo '">Удалить</a></td>';
 	echo '</tr>';	
 };
 mysql_close($dbh);

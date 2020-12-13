@@ -4,7 +4,7 @@
 </head>
 <body>
 <h3>Список работ</h3>
-<table>
+<table width="100%" border="1" cellpadding="5" cellspacing="0">
 <?php
 include ("../connection.php");
 $idkhr = mysql_real_escape_string($_GET["idkhr"]);
@@ -13,7 +13,7 @@ $where = "";
 if ($idkhr != 0) {
 	$where = " WHERE `khr_id`='".$idkhr."'"; 
 };	
-$query = "SELECT * FROM work".$where;
+$query = "SELECT * FROM `work`".$where;
 $res = mysql_query($query);
 if (mysql_num_rows($res) != 0) {
 	echo "<tr>
@@ -42,8 +42,8 @@ while($row = mysql_fetch_array($res))
 		<td>".$row['num']."</td>";
 	echo "	<td>$type</td>";
 	$idwork = $row['id'];
-	echo '<td><a href="work.php?idwork='.$idwork.'&idkhr='.$idkhr.'">'.htmlspecialchars(stripslashes($title)).'</a></td>';
-	echo "	<td>".$row['begin_cur']."</td>";
+	echo '<td><a href="work.php?idwork='.$idwork.'">'.htmlspecialchars(stripslashes($title)).'</a></td>';
+    echo "	<td>".$row['begin_cur']."</td>";
 	echo "</tr>";
 	
 		

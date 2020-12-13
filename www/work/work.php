@@ -14,13 +14,13 @@
 <?php 
     include "../delete_functions.php";
 	include "../connection.php";
-    $idwork = $_GET['idwork'];
+    $idwork = $_GET['idwork']; // need for new works
     if ($idwork > 0) {
         $query = "SELECT * FROM work WHERE id="."'$idwork'";
         $res = mysql_query($query);
         $row = mysql_fetch_array($res);
         $title = $row['title'];
-        $number = $row['num'];
+        $number_work = $row['num'];
         $begin_current = $row['begin_cur'];
         $end_current = $row['end_cur'];
         $type_work = $row['type'];
@@ -51,7 +51,7 @@
 </select>
 </label><br>
 <label>
-Номер <input name="number" type="text" size="10" value="<?php echo $number; ?>">&nbsp;&nbsp;&nbsp;
+Номер <input name="number" type="text" size="10" value="<?php echo $number_work; ?>">&nbsp;&nbsp;&nbsp;
 </label>
 <label>
 Название 
